@@ -189,7 +189,6 @@ dist
 .idea/modules.xml
 .idea/vcs.xml
 
-
 # Generated files
 .idea/**/contentModel.xml
 
@@ -201,7 +200,7 @@ dist
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+.idea/
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
@@ -213,9 +212,9 @@ dist
 # .idea/artifacts
 # .idea/compiler.xml
 # .idea/jarRepositories.xml
-# .idea/modules.xml
+# .idea/app.xml
 # .idea/*.iml
-# .idea/modules
+# .idea/app
 # *.iml
 # *.ipr
 
