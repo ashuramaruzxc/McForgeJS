@@ -201,6 +201,7 @@ dist
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
 .idea/
+ExampleMod/
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries

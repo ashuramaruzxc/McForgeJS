@@ -58,7 +58,8 @@ module.exports = class {
 
         // load gameVersion
         this.gameVersion = args.gameVersion
-        this.gameVersion.includeFunc.call(this)
+        //TODO
+        //this.gameVersion.includeFunc.call(this)
         this.FUNCTIONEXPORTLIST.push(this.gameVersion.exportFunc)
 
         // create assets object
@@ -238,8 +239,9 @@ module.exports = class {
         })( JAVAPACKAGESYSTEM, `${host}.${author}.${modid}` )
 
         // call ForgeUtil`s functions
-        for ( let exportFunction of this.FUNCTIONEXPORTLIST )
-            exportFunction.call(this)
+        //TODO
+        //for ( let exportFunction of this.FUNCTIONEXPORTLIST )
+            //exportFunction.call(this)
 
         // load assets to jar
         const assetsPath = `output/assets/${modid}/`
