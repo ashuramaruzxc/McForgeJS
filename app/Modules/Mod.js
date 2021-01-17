@@ -12,15 +12,15 @@ const nodePath = require("path")
 module.exports = class {
     constructor( args ) {
         $([
-            [args.modid                                                                                         , "string"                     ,true],
+            [args.modid                                                                                         , "string"      ,true],
             [args.gameVersion                                                                                   , GameVersion   ,true],
-            [args.author                                                                                        , "string"                     ,true],
-            [args.version?args.version:args.version="1.0"                                                       , "string"                          ],
-            [args.host?args.host:args.host="me"                                                                 , "string"                          ],
-            [args.description?args.description:args.description="Minecraft modification created by MCForge.js"  , "string"                          ],
-            [args.url?args.url:args.url=""                                                                      , "string"                          ],
-            [args.name?args.name:args.name=args.modid                                                           , "string"                          ],
-            [args.credits?args.credits:args.credits=""                                                          , "string"                          ]
+            [args.author                                                                                        , "string"      ,true],
+            [args.version?args.version:args.version="1.0"                                                       , "string"           ],
+            [args.host?args.host:args.host="me"                                                                 , "string"           ],
+            [args.description?args.description:args.description="Minecraft modification created by MCForge.js"  , "string"           ],
+            [args.url?args.url:args.url=""                                                                      , "string"           ],
+            [args.name?args.name:args.name=args.modid                                                           , "string"           ],
+            [args.credits?args.credits:args.credits=""                                                          , "string"           ]
         ])
 
         // create object with information about mod
