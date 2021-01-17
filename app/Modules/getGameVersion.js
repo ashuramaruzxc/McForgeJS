@@ -39,9 +39,8 @@ module.exports = function ( displayName, propertyes ) {
             minecraftMetaJson: new MinecraftMetaJson(filesLink + "minecraftMetaJson/" + displayName + ".json"),
             forgeMetaJson: new ForgeMetaJson(filesLink + "forgeMetaJson/" + displayName + ".json"),
             minecraftAPI: new APIDownloader(filesLink + "API/" + displayName + ".jar"),
-            //TODO
-            //includeFunc: require("./functionsInclude/" + displayName),
-            //exportFunc: require("./functionsExport/" + displayName),
+            includeFunc: require(propertyes.__dirname + "/functionsInclude/" + displayName),
+            exportFunc: require(propertyes.__dirname + "/functionsExport/" + displayName),
             displayName
         })
 
@@ -68,9 +67,8 @@ module.exports = function ( displayName, propertyes ) {
         minecraftMetaJson: new MinecraftMetaJson(filesLink + "minecraftMetaJson/" + displayName + ".json"),
         forgeMetaJson: new ForgeMetaJson(filesLink + "forgeMetaJson/" + displayName + ".json"),
         minecraftAPI: new APIDownloader(filesLink + "API/" + displayName + ".jar"),
-        //TODO
-        //includeFunc: require(nodePath.join("functionsInclude", displayName + ".js")),
-        //exportFunc: require(nodePath.join("functionsExport", displayName + ".js")),
+        includeFunc: require(nodePath.join(propertyes.__dirname, "functionsInclude", displayName)),
+        exportFunc: require(nodePath.join(propertyes.__dirname, "functionsExport", displayName)),
         displayName
     })
 

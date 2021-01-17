@@ -9,6 +9,8 @@ const ForgeUtil = require('./ForgeUtil')
 const nodeDel = require('del')
 const nodeFs = require("fs")
 const nodePath = require("path")
+
+
 module.exports = class {
     constructor( args ) {
         $([
@@ -58,8 +60,7 @@ module.exports = class {
 
         // load gameVersion
         this.gameVersion = args.gameVersion
-        //TODO
-        //this.gameVersion.includeFunc.call(this)
+        this.gameVersion.includeFunc.call(this)
         this.FUNCTIONEXPORTLIST.push(this.gameVersion.exportFunc)
 
         // create assets object
@@ -239,9 +240,8 @@ module.exports = class {
         })( JAVAPACKAGESYSTEM, `${host}.${author}.${modid}` )
 
         // call ForgeUtil`s functions
-        //TODO
-        //for ( let exportFunction of this.FUNCTIONEXPORTLIST )
-            //exportFunction.call(this)
+        for ( let exportFunction of this.FUNCTIONEXPORTLIST )
+            exportFunction.call(this)
 
         // load assets to jar
         const assetsPath = `output/assets/${modid}/`
