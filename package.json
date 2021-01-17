@@ -1,0 +1,32 @@
+{
+  "name": "mcforgejs",
+  "version": "0.4.0",
+  "dependencies": {
+    "del": "^6.0.0",
+    "neat-csv": "^6.0.1",
+    "sync-request": "^6.1.0"
+  },
+  "description": "Framework for making mods in minecraft on JavaScript",
+  "main": "MCForge.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/r6deadinside/McForgeJS.git"
+  },
+  "keywords": [
+    "minecraft",
+    "forge",
+    "minecraftjs",
+    "forgejs",
+    "java"
+  ],
+  "author": "MrPeace , Ashley",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/r6deadinside/McForgeJS/issues"
+  },
+  "homepage": "https://github.com/r6deadinside/McForgeJS#readme"
+}
