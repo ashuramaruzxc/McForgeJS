@@ -46,11 +46,13 @@ module.exports = class {
         var modid = this.info.modid
 
         // create template JAVA packages
-        this.JAVAPACKAGESYSTEM = { "MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR" : true }
-        this.JAVAPACKAGESYSTEM[this.info.modid] = {
+        this.JAVAPACKAGESYSTEM = {
             "MCFORGE_SYSTEM_TAG_INCLUDE_LIST" : [],
             "MCFORGE_SYSTEM_TAG_APPEND_LIST" : [],
-            "MCFORGE_SYSTEM_TAG_MODID_DETECTOR" : true
+            "MCFORGE_SYSTEM_TAG_SET_LIST" : [],
+            "MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST": [],
+            "MCFORGE_SYSTEM_TAG_MODID_DETECTOR" : true,
+            "MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR" : true
         }
 
         // create objects and arrays for other parts
@@ -117,54 +119,51 @@ module.exports = class {
                     switch ( prop ) {
                         // function Java
                         case "include": return function include( includePath ) {
-                            if (JP.MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR !== true) {
-                                if (JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST === undefined) JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST = []
-                                if (JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST.includes(includePath)) return
-                                var splitedIncludePath = includePath.split(".")
-                                splitedIncludePath.pop()
-                                var isHasImportParentPackage;
-                                for (let p of splitedIncludePath)
-                                    for (let includer of JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST)
-                                        if (includer.indexOf(includePath.slice(0, includePath.indexOf(p) + p.length) + ".*") === 0)
-                                        {
-                                            isHasImportParentPackage = true
-                                            break
-                                        }
-                                if (!isHasImportParentPackage) JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST.push(`${includePath}`)
-                            } else {
-                                if (JP[modid] === undefined) JP[modid] = []
-                                if (JP[modid].MCFORGE_SYSTEM_TAG_INCLUDE_LIST === undefined) JP[modid].MCFORGE_SYSTEM_TAG_INCLUDE_LIST = []
-                                if (JP[modid].MCFORGE_SYSTEM_TAG_INCLUDE_LIST.includes(includePath)) return
-                                var splitedIncludePath = includePath.split(".")
-                                splitedIncludePath.pop()
-                                var isHasImportParentPackage;
-                                for (let p of splitedIncludePath)
-                                    for (let includer of JP[modid].MCFORGE_SYSTEM_TAG_INCLUDE_LIST)
-                                        if (includer.indexOf(includePath.slice(0, includePath.indexOf(p) + p.length) + ".*") === 0) {
-                                            isHasImportParentPackage = true
-                                            break
-                                        }
-                                if (!isHasImportParentPackage) JP[modid].MCFORGE_SYSTEM_TAG_INCLUDE_LIST.push(includePath)
-                            }
+                            if (JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST === undefined) JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST = []
+                            if (JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST.includes(includePath)) return
+                            var splitedIncludePath = includePath.split(".")
+                            splitedIncludePath.pop()
+                            var isHasImportParentPackage;
+                            for (let p of splitedIncludePath)
+                                for (let includer of JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST)
+                                    if (includer.indexOf(includePath.slice(0, includePath.indexOf(p) + p.length) + ".*") === 0)
+                                    {
+                                        isHasImportParentPackage = true
+                                        break
+                                    }
+                            if (!isHasImportParentPackage) JP.MCFORGE_SYSTEM_TAG_INCLUDE_LIST.push(`${includePath}`)
+                            
                         }
-                        case "append": return  function append( appendValue ) {
-                            if (JP.MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR !== true) {
-                                if (JP.MCFORGE_SYSTEM_TAG_APPEND_LIST === undefined) JP.MCFORGE_SYSTEM_TAG_APPEND_LIST = []
-                                JP.MCFORGE_SYSTEM_TAG_APPEND_LIST.push(appendValue)
-                            } else {
-                                if (JP[modid] === undefined) JP[modid] = []
-                                if (JP[modid].MCFORGE_SYSTEM_TAG_APPEND_LIST === undefined) JP[modid].MCFORGE_SYSTEM_TAG_APPEND_LIST = []
-                                JP[modid].MCFORGE_SYSTEM_TAG_APPEND_LIST.push(appendValue)
-                            }
+                        
+                        case "append": return  function append( appendParent, appendValue ) {
+                            if ( JP.MCFORGE_SYSTEM_TAG_APPEND_LIST === undefined ) JP.MCFORGE_SYSTEM_TAG_APPEND_LIST = {}
+                            if ( JP.MCFORGE_SYSTEM_TAG_APPEND_LIST[appendParent] === undefined ) JP.MCFORGE_SYSTEM_TAG_APPEND_LIST[appendParent] = []
+                            JP.MCFORGE_SYSTEM_TAG_APPEND_LIST[appendParent].push( appendValue )
+                            
                         }
+                        
+                        case "set": return function set( setValue ) {
+                            if ( JP.MCFORGE_SYSTEM_TAG_SET_LIST === undefined ) JP.MCFORGE_SYSTEM_TAG_SET_LIST = []
+                            JP.MCFORGE_SYSTEM_TAG_SET_LIST.push( setValue )
+                        }
+                        
+                        case "setPreIniter": return function setPreIniter( preiniterParent, preiniterValue ) {
+                            if ( JP.MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST === undefined ) JP.MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST = {}
+                            JP.MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST[preiniterParent] = preiniterValue
+                            
+                        }
+                        
                         // open new packages
                         default:
                             if (JP[prop] === undefined) JP[prop] = {}
                             return getJAVAProxyObject(JP[prop])
+                            
                         // Error propertyes
-                        case "MCFORGE_SYSTEM_TAG_APPEND_LIST":
-                        case "MCFORGE_SYSTEM_TAG_INCLUDE_LIST":
-                        case "MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR":
+                        case "MCFORGE_SYSTEM_TAG_APPEND_LIST"            :
+                        case "MCFORGE_SYSTEM_TAG_INCLUDE_LIST"           :
+                        case "MCFORGE_SYSTEM_TAG_SET_LIST"               :
+                        case "MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST"    :
+                        case "MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR"   :
                             throw new Error("This name is used by MCForge, please change name of packages.")
                     }
 
@@ -214,30 +213,57 @@ module.exports = class {
         const version = this.info.version
         const JAVAPACKAGESYSTEM = this.JAVAPACKAGESYSTEM
         ;(function loadPackage(pack, path, pack_name) {
-            if ( pack.MCFORGE_SYSTEM_TAG_APPEND_LIST || pack.MCFORGE_SYSTEM_TAG_INCLUDE_LIST)
+            if ( pack.MCFORGE_SYSTEM_TAG_APPEND_LIST || pack.MCFORGE_SYSTEM_TAG_INCLUDE_LIST || pack .MCFORGE_SYSTEM_TAG_SET_LIST || pack .MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST)
             {
-                let JavaOutput = `package ${path.slice(0, path.lastIndexOf('.'))};\n\n`
+                // init file
+                var JavaOutput = `package ${path};\n\n`
+                
+                // append includers of file
                 if (pack.MCFORGE_SYSTEM_TAG_INCLUDE_LIST)
                     for (let includeString of pack.MCFORGE_SYSTEM_TAG_INCLUDE_LIST)
                         JavaOutput += `import ${includeString};\n`
+                        
+                // add main preiniter
                 if (pack.MCFORGE_SYSTEM_TAG_MODID_DETECTOR)
                     JavaOutput += `\n@Mod("${modid}")`
+                
+                // init class
                 JavaOutput += `\npublic class ${pack_name} {\n`
+                    
+                if (pack.MCFORGE_SYSTEM_TAG_SET_LIST)
+                    for (let setString of pack.MCFORGE_SYSTEM_TAG_SET_LIST)
+                        JavaOutput += `\t${setString}\n\n`
+                        
                 if (pack.MCFORGE_SYSTEM_TAG_APPEND_LIST)
-                    for (let appendString of pack.MCFORGE_SYSTEM_TAG_APPEND_LIST)
-                        JavaOutput += `\t${appendString}\n\n`
+                    for (let appenderName in pack.MCFORGE_SYSTEM_TAG_APPEND_LIST)
+                    {
+                        if (pack.MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST[appenderName])
+                            JavaOutput += `\t${pack.MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST[appenderName]}\n`
+                            
+                        JavaOutput += `\t${appenderName} { \n`
+                            
+                        for (let appendString of pack.MCFORGE_SYSTEM_TAG_APPEND_LIST[appenderName])
+                            JavaOutput += `\t${appendString}\n\n`
+                            
+                        JavaOutput += '}'
+                    }
+                        
                 JavaOutput += "}"
-                mkdir("output/"+path.replace(/\./g, "/"))
-                nodeFs.writeFileSync(nodePath.join("output",path.replace(/\./g, "/") +  ".java"), JavaOutput)
+                
+                mkdir("output/"+path.replace(/\./g, "/") + "/")
+                nodeFs.writeFileSync("output/"+path.replace(/\./g, "/") + "/" + pack_name +  ".java", JavaOutput)
             }
             for (let package_index in pack)
             {
                 if (typeof pack[package_index] !== "object") continue
-                loadPackage(pack[package_index], `${path}.${package_index}`, package_index)
+                if (pack.MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR)
+                    loadPackage(pack[package_index], `${path}`, package_index)
+                else 
+                    loadPackage(pack[package_index], `${path}.${pack_name}`, package_index)
             }
 
 
-        })( JAVAPACKAGESYSTEM, `${host}.${author}.${modid}` )
+        })( JAVAPACKAGESYSTEM, `${host}.${author}.${modid}`, modid)
 
         // call ForgeUtil`s functions
         for ( let exportFunction of this.FUNCTIONEXPORTLIST )
