@@ -6,7 +6,7 @@ module.exports = class {
             [args.includeFunc, "function"],
             [args.exportFunc, "function"],
             [args.innerElements, "object"],
-            [args.outerElements, "object"]
+            [args.getOuterElements, "function"]
         ])
 
         // load propertyes
@@ -14,6 +14,6 @@ module.exports = class {
         this.includeFunc = args.includeFunc
         this.exportFunc = args.exportFunc
         this.innerElements = args.innerElements
-        this.outerElements = args.outerElements
+        this.getOuterElements = args.getOuterElements
     }
 }

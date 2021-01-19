@@ -38,6 +38,7 @@ module.exports = class {
         this.info.url         = args.url
         this.info.name        = args.name
         this.info.credits     = args.credits
+        
         this.dataDir          = args.dataDir
         this.assetsDir        = args.assetsDir
 
@@ -67,50 +68,6 @@ module.exports = class {
         this.gameVersion = args.gameVersion
         this.gameVersion.includeFunc.call(this)
         this.FUNCTIONEXPORTLIST.push(this.gameVersion.exportFunc)
-
-        // create assets object
-        this.ASSETS = {}
-        this.ASSETS.LANGUAGEINFO = {}
-        this.ASSETS.lang = new Proxy(this.ASSETS.LANGUAGEINFO, {
-            get( target, lang ) {
-
-                // Error
-                if ( lang.length !== 5 || lang[2] !== '_' )
-                    throw new Error(`${lang} lang is not suported`)
-
-                // try create lang object
-                if ( !target[lang] ) target[lang] = {}
-
-                return {
-                    put(type, name, value) {
-
-                        // Errors
-                        if ( !type || typeof type !== "string" )
-                            throw new Error("Type of type is not string")
-                        if ( !name || typeof name !== "string" )
-                            throw new Error("Type of name is not string")
-                        if ( !value || typeof value !== "string" )
-                            throw new Error("Type of value is not string")
-
-                        // send info to target
-                        target[lang][`${type}.${modid}.${name}`] = value
-
-                    }
-                }
-
-            },
-            set() { throw new Error("Lang must be changed by lang['en_us'].put(type, name, value)") }
-        })
-
-        this.ASSETS.MODELSINFO = {}
-        this.ASSETS.models = createProxyAutoObject( this.ASSETS.MODELSINFO )
-
-        this.ASSETS.TEXTURESINFO = {}
-        this.ASSETS.textures = createProxyAutoObject( this.ASSETS.TEXTURESINFO )
-
-        // create template of data
-        this.DATAINFO = {}
-        this.DATA = createProxyAutoObject( this.DATAINFO )
 
     }
 
@@ -367,14 +324,11 @@ module.exports = class {
                 else throw new Error(`ForgeUtil ${forgeUtil.name} cannot install ${El_i} to Mod because it is already initilize`)
 
         // load outer Elements
-        this.util[ forgeUtil.name ] = {}
-        if ( forgeUtil.outerElements )
-            for ( let El_i in forgeUtil.outerElements )
-                this.util[ forgeUtil.name ][ El_i ] = (function (i) { return function () { forgeUtil.outerElements[ i ].call(ModT) } })(El_i)
+        this.util[ forgeUtil.name ] = forgeUtil.getOuterElements().call(ModT)
 
         // call include function
         if ( forgeUtil.includeFunc )
-            forgeUtil.includeFunc.call(this)
+            forgeUtil.includeFunc.call(ModT)
     }
 
     appendToJar( arg, pathArhiveFile) {
