@@ -54,9 +54,9 @@ module.exports = class {
             "MCFORGE_SYSTEM_TAG_APPEND_LIST" : [],
             "MCFORGE_SYSTEM_TAG_SET_LIST" : [],
             "MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST": [],
-            "MCFORGE_SYSTEM_TAG_MODID_DETECTOR" : true,
             "MCFORGE_SYSTEM_TAG_ROOT_OBJECT_DETECTOR" : true
         }
+        this.JAVAPACKAGESYSTEM["MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST"][null] = `@Mod("${modid}")`
 
         // create objects and arrays for other parts
         this.FUNCTIONEXPORTLIST = []
@@ -226,9 +226,9 @@ module.exports = class {
                     for (let includeString of pack.MCFORGE_SYSTEM_TAG_INCLUDE_LIST)
                         JavaOutput += `import ${includeString};\n`
                         
-                // add main preiniter
-                if (pack.MCFORGE_SYSTEM_TAG_MODID_DETECTOR)
-                    JavaOutput += `\n@Mod("${modid}")`
+                // add main preiniter                    
+                if (pack.MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST[null])
+                    JavaOutput += `\n${pack.MCFORGE_SYSTEM_TAG_SET_PRE_INITER_LIST[null]}`
                 
                 // init class
                 JavaOutput += `\npublic class ${pack_name} {\n`
