@@ -1,5 +1,5 @@
 const $                     = require('../Util/$')
-const createProxyAutoObject = require('../Util/createProxyAutoObject')
+/*const createProxyAutoObject = require('../Util/createProxyAutoObject')*/
 const mkdir                 = require('../Util/mkdir')
 const { execSync }          = require("child_process")
 const osInfo                = require('../Util/os')

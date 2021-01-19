@@ -27,9 +27,9 @@ module.exports = new Proxy ({
                     get(target, prop) {
                         
                         var result = //TODO
-                        {
+                             {
                             "___TAG_ENTRY_NAME___":prop,
-                            "___TAG_SIMPLE_REGISTRY_ELEMENT___": true
+                            "___TAG_SIMPLE_REGISTRY_ELEMENT___": true,
                             "___TAG_PROPERTIES_LIST___": []
                         }
                         
@@ -83,7 +83,7 @@ module.exports = new Proxy ({
                 })
                 
                 return outerElements
-            }
+            } ,
             innerElements: {
                 registry() {
                     
