@@ -1,14 +1,15 @@
-const $ = require('../Util/$')
+const $                     = require('../Util/$')
 const createProxyAutoObject = require('../Util/createProxyAutoObject')
-const mkdir = require('../Util/mkdir')
-const { execSync } = require("child_process")
-const osInfo = require('../Util/os')
-const GameVersion = require('./GameVersion')
-const ForgeUtil = require('./ForgeUtil')
+const mkdir                 = require('../Util/mkdir')
+const { execSync }          = require("child_process")
+const osInfo                = require('../Util/os')
+const GameVersion           = require('./GameVersion')
+const ForgeUtil             = require('./ForgeUtil')
 
-const nodeDel = require('del')
-const nodeFs = require("fs")
-const nodePath = require("path")
+const nodeDel       = require('del')
+const nodeFs        = require("fs")
+const nodePath      = require("path")
+const nodeCopyDir   = require("copy-dir").sync
 
 
 module.exports = class {
@@ -37,6 +38,8 @@ module.exports = class {
         this.info.url         = args.url
         this.info.name        = args.name
         this.info.credits     = args.credits
+        this.dataDir          = args.dataDir
+        this.assetsDir        = args.assetsDir
 
         this.jar              = args.jar
         this.javac            = args.javac
@@ -270,46 +273,17 @@ module.exports = class {
             exportFunction.call(this)
 
         // load assets to jar
-        const assetsPath = `output/assets/${modid}/`
-        mkdir(assetsPath)
-
-        const langPath = assetsPath + "lang/"
-        mkdir(langPath)
-        const langs = this.ASSETS.LANGUAGEINFO
-        for ( let lang_i in langs )
-            nodeFs.writeFileSync(nodePath.join(langPath, lang_i + ".json"), JSON.stringify(langs[lang_i]))
-
-        const modelsPath = assetsPath + "models/"
-        mkdir(modelsPath)
-        const models = this.ASSETS.MODELSINFO
-        for ( let type in models ) {
-            mkdir(modelsPath + type + "/")
-            for ( let model_name in models[type] )
-                nodeFs.writeFileSync(nodePath.join(modelsPath, type, model_name + ".json"), JSON.stringify(models[type][model_name]))
-        }
-
-        const texturesPath = assetsPath + "textures/"
-        mkdir(texturesPath)
-        const textures = this.ASSETS.TEXTURESINFO
-        for ( let type in textures ) {
-            mkdir(texturesPath + type + "/")
-            for ( let textureTemplate_i in textures[type] )
-                nodeFs.writeFileSync(nodePath.join(texturesPath, type, textures[type][textureTemplate_i].fileName), nodeFs.readFileSync(textures[type][textureTemplate_i].filePath))
-        }
-
+        if (this.assetsDir) {
+            const assetsPath = `output/assets/${modid}/`
+            mkdir(assetsPath)
+            nodeCopyDir(this.assetsDir, assetsPath)
+        }  
+        
         // load data(dir) to jar
-        const dataPath = `output/data/${modid}/`
-        mkdir(dataPath)
-        const datas = this.DATAINFO
-        for ( let type in datas )
-        {
-            mkdir(dataPath + type + "/")
-            for ( let typeObj in datas[type] )
-            {
-                mkdir(dataPath + type + "/" + typeObj + "/")
-                for ( let d in datas[type][typeObj] )
-                    nodeFs.writeFileSync(nodePath.join(dataPath, type, typeObj, d + ".json"), JSON.stringify(datas[type][typeObj][d]))
-            }
+        if (this.dataDir) {
+            const dataPath = `output/data/${modid}/`
+            mkdir(dataPath)
+            nodeCopyDir(this.dataDir, dataPath)
         }
 
         // load files to jar
@@ -320,51 +294,6 @@ module.exports = class {
             else
                 nodeFs.writeFileSync("output/" + fileInfo.pathArhiveFile, fileInfo.value)
         }
-
-        // load info files
-//             const MODFILE_MCMETA = `{
-// "pack": {
-//     "description": "examplemod resources",
-//     "pack_format": 5,
-//     "_comment": "A pack_format of 5 requires json lang files and some texture changes from 1.15. Note: we require v5 pack meta for all mods."
-// }
-// }`
-//             nodeFs.writeFileSync("output/pack.mcmeta", MODFILE_MCMETA)
-//
-//             var MODFILE_TOML = `
-// modLoader="javafml"
-// loaderVersion="[${JSON.parse(this.gameVersion.forgeMetaJson.data).version.slice(0, 2)},)"
-// issueTrackerURL="http://my.issue.tracker/" #optional
-// [[mods]]
-// modId="${this.info.modid}"
-// version="${this.info.version}"
-// displayName="${this.info.name}"
-// updateJSONURL="http://myurl.me/"
-// displayURL="http://example.com/"
-// logoFile="examplemod.png"
-// credits="${this.info.credits}"
-// authors="${this.info.author}"
-// description='''
-// ${this.info.description}
-// '''
-//
-// [[dependencies.examplemod]]
-// modId="forge"
-// mandatory=true
-// versionRange="[${this.gameVersion.forgeMetaJson.getFileName().slice(0,2)},)"
-// ordering="NONE"
-// side="BOTH"
-//
-// [[dependencies.examplemod]]
-// modId="minecraft"
-// mandatory=true
-// versionRange="[${this.gameVersion.displayName}]"
-// ordering="NONE"
-// side="BOTH"
-//
-// `
-//             mkdir("output/META-INF/")
-//             nodeFs.writeFileSync("output/META-INF/mods.toml", MODFILE_TOML)
 
         // compile .java files -----
 
